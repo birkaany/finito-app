@@ -1,7 +1,10 @@
+import { useSelector } from "react-redux";
 import CreateBoardBtn from "./CreateBoardBtn";
 import SelectBoardBtn from "./SelectBoardBtn";
 
 const Sidebar = () => {
+  const boards = useSelector((state) => state.boards.boards);
+
   return (
     <aside className="hidden md:flex w-72 bg-white h-full flex-col justify-between">
       <div className="all-boards">
@@ -9,9 +12,10 @@ const Sidebar = () => {
           All Boards<span>(3)</span>
         </h2>
         <div className="boards flex flex-col gap-3">
-          <SelectBoardBtn>Platform Launch</SelectBoardBtn>
-          <SelectBoardBtn>Platform Launch</SelectBoardBtn>
-          <SelectBoardBtn>Platform Launch</SelectBoardBtn>
+          {boards.map(({ name, id }) => {
+            return <SelectBoardBtn key={id}>{name}</SelectBoardBtn>;
+          })}
+
           <CreateBoardBtn>Create New Board</CreateBoardBtn>
         </div>
       </div>
