@@ -9,10 +9,10 @@ const Sidebar = () => {
     <aside className="hidden md:flex min-w-[18rem] bg-white h-full flex-col justify-between">
       <div className="all-boards">
         <h2 className="px-6 py-4 uppercase text-mediumGrey text-xs font-bold tracking-widest">
-          All Boards<span>({boards.length})</span>
+          All Boards<span>({boards?.length})</span>
         </h2>
         <div className="boards flex flex-col gap-3">
-          {boards.map(({ name, id }) => {
+          {boards?.map(({ name, id }) => {
             return (
               <SelectBoardBtn key={id} id={id}>
                 {name}
