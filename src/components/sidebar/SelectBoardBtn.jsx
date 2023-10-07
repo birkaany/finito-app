@@ -1,4 +1,4 @@
-import boardIcon from "../../assets/img/fluent_board-split-24-regular.svg";
+import Icon from "../common/Icon";
 
 const SelectBoardBtn = ({
   children,
@@ -6,16 +6,15 @@ const SelectBoardBtn = ({
   setActiveBoardBtn,
   activeBoardBtn,
 }) => {
-  const activeClass = id == activeBoardBtn ? "bg-primaryColor text-white" : "";
+  const isActive = id == activeBoardBtn ? true : false;
   return (
     <button
       onClick={() => setActiveBoardBtn(id)}
-      className={`px-6 py-4 w-5/6 flex items-center rounded-r-[6rem] gap-4 
-      ${activeClass}`}
+      className={`px-6 py-4 w-5/6 text-mediumGrey flex items-center rounded-r-[6rem] gap-4 transition-all duration-300
+      ${isActive ? "bg-primaryColor text-white" : ""}`}
     >
-      <i>
-        <img src={boardIcon}></img>
-      </i>
+      <Icon iconName={"board"} color={isActive ? "white" : "#828FA3"} />
+
       {children}
     </button>
   );
