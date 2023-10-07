@@ -6,7 +6,7 @@ const Sidebar = () => {
   const boards = useSelector((state) => state.boards.boards);
 
   return (
-    <aside className="hidden md:flex w-72 bg-white h-full flex-col justify-between">
+    <aside className="hidden md:flex min-w-[18rem] bg-white h-full flex-col justify-between">
       <div className="all-boards">
         <h2 className="px-6 py-4 uppercase text-mediumGrey text-xs font-bold tracking-widest">
           All Boards<span>({boards.length})</span>

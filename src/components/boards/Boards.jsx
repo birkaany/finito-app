@@ -1,38 +1,26 @@
 import { useSelector } from "react-redux";
+import TaskCard from "./TaskCard";
 
 function Boards() {
-  const boards = useSelector((state) => state.boards.boards);
+  const selectedBoard = useSelector((state) =>
+    state.boards.boards.find((board) => board.isActive)
+  );
 
   return (
     <main className="p-6">
       <div className="flex gap-6 items-start justify-start">
-        {boards.map((board) => {
+        {selectedBoard.columns.map((column, index) => {
           return (
-            <div className="w-72" key={board.id}>
+            <div className="w-72" key={index}>
               <div className="board-title flex items-center gap-3">
                 <i className="bg-red rounded-full w-4 h-4"></i>
                 <h2 className="text-xs  tracking-widest text-mediumGrey font-bold">
-                  TODO (4)
+                  {column.name} ({column.tasks.length})
                 </h2>
               </div>
-              <div className="board-list mt-6 flex flex-col gap-5">
-                <div className="board bg-white rounded-lg shadow-md px-4 py-6">
-                  <h3 className="text-black text-base font-bold">
-                    Build UI for onboarding flow
-                  </h3>
-                  <span className="text-xs font-bold text-mediumGrey">
-                    0 of 3 subtasks
-                  </span>
-                </div>
-                <div className="board bg-white rounded-lg shadow-md px-4 py-6">
-                  <h3 className="text-black text-base font-bold">
-                    Build UI for onboarding flow
-                  </h3>
-                  <span className="text-xs font-bold text-mediumGrey">
-                    0 of 3 subtasks
-                  </span>
-                </div>
-              </div>
+              {column.tasks.map((task, index) => {
+                return <TaskCard key={index} task={task} />;
+              })}
             </div>
           );
         })}
