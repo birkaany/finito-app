@@ -7,7 +7,7 @@ function Boards() {
   );
 
   return (
-    <main className="p-6">
+    <main className="p-6 overflow-x-scroll h-[calc(100vh-7rem)]">
       <div className="flex gap-6 items-start justify-start">
         {selectedBoard.columns.map((column, index) => {
           return (
