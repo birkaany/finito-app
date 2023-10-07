@@ -1,15 +1,9 @@
 import { useSelector } from "react-redux";
 import CreateBoardBtn from "./CreateBoardBtn";
-
-import { useState } from "react";
-
 import SelectBoardBtn from "./SelectBoardBtn";
 
 const Sidebar = () => {
   const boards = useSelector((state) => state.boards.boards);
-  const [activeBoardBtn, setActiveBoardBtn] = useState(
-    boards ? boards[0].id : null
-  );
 
   return (
     <aside className="hidden md:flex w-72 bg-white h-full flex-col justify-between">
@@ -20,12 +14,7 @@ const Sidebar = () => {
         <div className="boards flex flex-col gap-3">
           {boards.map(({ name, id }) => {
             return (
-              <SelectBoardBtn
-                key={id}
-                id={id}
-                setActiveBoardBtn={setActiveBoardBtn}
-                activeBoardBtn={activeBoardBtn}
-              >
+              <SelectBoardBtn key={id} id={id}>
                 {name}
               </SelectBoardBtn>
             );

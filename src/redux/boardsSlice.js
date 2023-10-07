@@ -295,6 +295,7 @@ const initialState = {
           ],
         },
       ],
+      isActive: true,
     },
     {
       name: "Marketing Plan",
@@ -387,6 +388,7 @@ const initialState = {
           tasks: [],
         },
       ],
+      isActive: false,
     },
     {
       name: "Roadmap",
@@ -441,6 +443,7 @@ const initialState = {
           tasks: [],
         },
       ],
+      isActive: false,
     },
   ],
 };
@@ -448,7 +451,32 @@ const initialState = {
 export const boardsSlice = createSlice({
   name: "boards",
   initialState,
-  reducers: {},
+  reducers: {
+    setActive: (state, action) => {
+      // const { payload } = action;
+      // const selectedBoard = state.boards.find((board) => board.id === payload);
+
+      // if (selectedBoard) {
+      //   selectedBoard.isActive = true;
+      // }
+      const { payload } = action;
+      const updatedBoards = state.boards.map((board) => {
+        if (board.id === payload) {
+          return {
+            ...board,
+            isActive: true,
+          };
+        } else {
+          return {
+            ...board,
+            isActive: false,
+          };
+        }
+      });
+      state.boards = updatedBoards;
+    },
+  },
 });
 
 export default boardsSlice.reducer;
+export const { setActive } = boardsSlice.actions;
