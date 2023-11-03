@@ -16,8 +16,11 @@ const SelectBoardBtn = ({ children, id }) => {
       ${selectedBoard.isActive ? "bg-primaryColor text-white" : ""}`}
     >
       <Icon
-        iconName={"board"}
-        color={selectedBoard.isActive ? "white" : "#828FA3"}
+        icon="board-icon"
+        size={20}
+        color={`${
+          selectedBoard.isActive ? "bg-primaryColor" : "bg-mediumGray"
+        }`}
       />
       {children}
     </button>
