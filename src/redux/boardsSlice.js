@@ -469,8 +469,28 @@ export const boardsSlice = createSlice({
       });
       state.boards = updatedBoards;
     },
+    addTask: (state, action) => {
+      const { title, description, subtasks, taskStatus } = action.payload;
+      const updatedBoards = state.boards.map((board) => {
+        if (!board.isActive) return board;
+
+        const updatedColumns = board.columns.map((column) => {
+          if (column.name !== taskStatus) return column;
+
+          const updatedTasks = [
+            ...column.tasks,
+            { title, description, subtasks, status: taskStatus },
+          ];
+          return { ...column, tasks: updatedTasks };
+        });
+
+        return { ...board, columns: updatedColumns };
+      });
+
+      return { ...state, boards: updatedBoards };
+    },
   },
 });
 
 export default boardsSlice.reducer;
-export const { setActive } = boardsSlice.actions;
+export const { setActive, addTask } = boardsSlice.actions;

@@ -1,43 +1,70 @@
 import { useRef, useState } from "react";
+
 import Icon from "../common/Icon";
 import Button from "../common/Button";
 
-function AddTaskForm() {
-  const formRef = useRef();
-  const [subTasks, setSubTasks] = useState([
-    {
-      title: "",
-      isCompleted: false,
-      id: crypto.randomUUID(),
-    },
-    {
-      title: "",
-      isCompleted: false,
-      id: crypto.randomUUID(),
-    },
-  ]);
-  const statusList = ["Seçenek 1", "Seçenek 2", "Seçenek 3"];
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const handleStatusChange = (e) => {
-    setSelectedStatus(e.target.value);
-  };
+import { useSelector, useDispatch } from "react-redux";
+import { addTask } from "../../redux/boardsSlice";
 
+function AddTaskForm() {
+  const selectedBoard = useSelector((state) =>
+    state.boards.boards.find((board) => board.isActive)
+  );
+  const dispatch = useDispatch();
+  const formRef = useRef();
+  const statusList = selectedBoard.columns.map((column) => column.name);
+  const [formValues, setFormValues] = useState({
+    title: "",
+    description: "",
+    subtasks: [
+      {
+        title: "",
+        isCompleted: false,
+        id: crypto.randomUUID(),
+      },
+      {
+        title: "",
+        isCompleted: false,
+        id: crypto.randomUUID(),
+      },
+    ],
+    taskStatus: statusList[0],
+  });
+
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  }
   function onChangeSubTask(id, newValue) {
-    setSubTasks((prevState) => {
-      const newState = [...prevState];
-      const subtask = newState.find((subtask) => subtask.id === id);
-      subtask.title = newValue;
-      return newState;
+    setFormValues((prevValues) => {
+      const updatedSubTasks = prevValues.subtasks.map((subtask) => {
+        if (subtask.id === id) {
+          return { ...subtask, title: newValue };
+        }
+        return subtask;
+      });
+
+      return {
+        ...prevValues,
+        subtasks: updatedSubTasks,
+      };
     });
   }
+  function handleStatusChange(e) {
+    setFormValues((prevState) => {
+      return {
+        ...prevState,
+        taskStatus: e.target.value,
+      };
+    });
+  }
+
   function handleSubmitForm(e) {
     e.preventDefault();
-    const formData = new FormData(formRef.current);
-    const data = Object.entries(formData.entries());
-    console.log(data);
-    data.subTasks = subTasks;
-    data.selectedStatus = selectedStatus;
-    console.log(data);
+    dispatch(addTask(formValues));
   }
   return (
     <div className="flex bg-white p-8 rounded-md max-w-lg w-96 transition-all duration-200 flex-col items-start gap-6">
@@ -56,8 +83,11 @@ function AddTaskForm() {
           </label>
           <input
             name="title"
+            required
             type="text"
             className="border-mediumGrey border rounded-md px-4 py-2 outline-primaryColor text-sm"
+            value={formValues.title}
+            onChange={handleInputChange}
           />
         </div>
         <div className="form-group flex flex-col gap-2 w-full ">
@@ -67,7 +97,12 @@ function AddTaskForm() {
           >
             Description
           </label>
-          <textarea className="border-mediumGrey border rounded-md px-4 py-2 outline-primaryColor text-sm resize-none h-32"></textarea>
+          <textarea
+            name="description"
+            className="border-mediumGrey border rounded-md px-4 py-2 outline-primaryColor text-sm resize-none h-32"
+            value={formValues.description}
+            onChange={handleInputChange}
+          ></textarea>
         </div>
         <div className="form-group flex flex-col gap-2 w-full ">
           <label
@@ -76,18 +111,16 @@ function AddTaskForm() {
           >
             Subtasks
           </label>
-          {subTasks.map((subtask, index) => {
+          {formValues.subtasks.map((subtask, index) => {
             return (
               <div key={index} className="subtask flex items-center gap-4">
                 <input
                   className="border-mediumGrey border rounded-md px-4 py-2 outline-primaryColor text-sm w-full"
                   type="text"
-                  name="subtask-input"
+                  name="subtask"
                   placeholder="e.g Make coffee"
                   value={subtask.title}
-                  onChange={(e) => {
-                    onChangeSubTask(subtask.id, e.target.value);
-                  }}
+                  onChange={(e) => onChangeSubTask(subtask.id, e.target.value)}
                 />
                 <button
                   className=""
@@ -105,16 +138,17 @@ function AddTaskForm() {
           })}
           <Button
             onClick={() => {
-              setSubTasks((prevState) => {
-                const newTasks = [
+              setFormValues((prevState) => {
+                const newSubTask = {
+                  title: "",
+                  isCompleted: false,
+                  id: crypto.randomUUID(),
+                };
+                const updatedSubTasks = [...prevState.subtasks, newSubTask];
+                return {
                   ...prevState,
-                  {
-                    title: "",
-                    isCompleted: false,
-                    id: crypto.randomUUID(),
-                  },
-                ];
-                return newTasks;
+                  subtasks: updatedSubTasks,
+                };
               });
             }}
           >
@@ -129,11 +163,10 @@ function AddTaskForm() {
             Status
           </label>
           <select
-            value={selectedStatus}
+            value={formValues.taskStatus}
             onChange={handleStatusChange}
             className="border-mediumGrey border rounded-md px-4 py-2 outline-primaryColor text-sm"
           >
-            <option value="">Seçiniz</option>
             {statusList.map((status, index) => (
               <option key={index} value={status}>
                 {status}
@@ -141,7 +174,7 @@ function AddTaskForm() {
             ))}
           </select>
         </div>
-        <Button type="submit">Add Task</Button>
+        <Button type="submit">Create Task</Button>
       </form>
     </div>
   );
