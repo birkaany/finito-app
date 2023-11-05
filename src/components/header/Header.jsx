@@ -1,9 +1,11 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import boardsSlice from "../../redux/boardsSlice";
+import { openModal } from "../../redux/modalSlice";
 import Button from "../common/Button";
 import Logo from "./Logo";
 
 export const Header = () => {
+  const dispatch = useDispatch();
   const selectedBoard = useSelector((state) => {
     if (state.length > 0) {
       state.boards.boards.find((board) => board.isActive);
@@ -20,7 +22,7 @@ export const Header = () => {
             <h2 className="text-textL md:text-textXl text-black font-bold">
               {selectedBoard?.name}
             </h2>
-            <Button>Add New Task</Button>
+            <Button onClick={() => dispatch(openModal())}>Add New Task</Button>
           </div>
         </div>
       </div>
