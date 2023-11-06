@@ -5,13 +5,14 @@ import Button from "../common/Button";
 
 import { useSelector, useDispatch } from "react-redux";
 import { addTask } from "../../redux/boardsSlice";
+import { closeModal } from "../../redux/modalSlice";
 
 function AddTaskForm() {
   const selectedBoard = useSelector((state) =>
     state.boards.boards.find((board) => board.isActive)
   );
   const dispatch = useDispatch();
-  const formRef = useRef();
+
   const statusList = selectedBoard.columns.map((column) => column.name);
   const [formValues, setFormValues] = useState({
     title: "",
@@ -65,15 +66,12 @@ function AddTaskForm() {
   function handleSubmitForm(e) {
     e.preventDefault();
     dispatch(addTask(formValues));
+    dispatch(closeModal());
   }
   return (
     <div className="flex bg-white p-8 rounded-md max-w-lg w-96 transition-all duration-200 flex-col items-start gap-6">
       <h2 className="font-bold text-lg">Add New Task</h2>
-      <form
-        className="w-full flex flex-col gap-6"
-        onSubmit={handleSubmitForm}
-        ref={formRef}
-      >
+      <form className="w-full flex flex-col gap-6" onSubmit={handleSubmitForm}>
         <div className="form-group flex flex-col gap-2 w-full ">
           <label
             className="text-mediumGrey text-xs font-bold w-full capitalize"
@@ -120,15 +118,22 @@ function AddTaskForm() {
                   name="subtask"
                   placeholder="e.g Make coffee"
                   value={subtask.title}
+                  required
                   onChange={(e) => onChangeSubTask(subtask.id, e.target.value)}
                 />
                 <button
+                  type="button"
                   className=""
                   onClick={() => {
-                    const newTask = subTasks.filter(
-                      (task) => subtask.id !== task.id
+                    const updatedSubTasks = formValues.subtasks.filter(
+                      (task) => task.id !== subtask.id
                     );
-                    setSubTasks(newTask);
+                    setFormValues((prevState) => {
+                      return {
+                        ...prevState,
+                        subtasks: updatedSubTasks,
+                      };
+                    });
                   }}
                 >
                   <Icon icon="cross-icon" size={20} color="gray" />
@@ -137,6 +142,7 @@ function AddTaskForm() {
             );
           })}
           <Button
+            type="button"
             onClick={() => {
               setFormValues((prevState) => {
                 const newSubTask = {
