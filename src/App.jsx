@@ -8,9 +8,7 @@ function App() {
   return (
     <div className="flex flex-col h-full">
       <Header />
-      <Modal>
-        <AddTaskForm />
-      </Modal>
+
       <div className="flex h-full items-start">
         <Sidebar />
         <Boards />
